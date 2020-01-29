@@ -20,4 +20,18 @@ app.post('/projects', (req, res) => {
     return res.json(projects);
 });
 
+// List all projects
+app.get('/projects', (req, res) => {
+    return res.json(projects);
+});
+
+//Update an existing project
+app.put('/projects/:id', (req, res) => {
+    const { id } = req.params;
+    const { title } = req.body;
+    const project = projects.find(proj => proj.id == id);
+    project.title = title;
+    return res.json(projects);
+});
+
 app.listen(port, () => console.log(`App is listening on port ${port}`));
