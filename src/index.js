@@ -34,4 +34,12 @@ app.put('/projects/:id', (req, res) => {
     return res.json(projects);
 });
 
+//Delete an existing project by id
+app.delete('/projects/:id', (req, res) => {
+    const { id } = req.params;
+    const index = projects.findIndex(proj => proj.id == id);
+    projects.splice(index, 1);
+    return res.send();
+});
+
 app.listen(port, () => console.log(`App is listening on port ${port}`));
