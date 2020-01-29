@@ -13,7 +13,7 @@ app.post('/projects', (req, res) => {
     const project = {
         id,
         title,
-        task: [],
+        tasks: [],
     };
 
     projects.push(project);
@@ -40,6 +40,17 @@ app.delete('/projects/:id', (req, res) => {
     const index = projects.findIndex(proj => proj.id == id);
     projects.splice(index, 1);
     return res.send();
+});
+
+// Creates a new task for a project
+app.post('/projects/:id/tasks', (req, res) => {
+    const { id } = req.params;
+    const { title } = req.body;
+
+    const project = projects.find(proj => proj.id == id);
+    project.tasks.push(title);
+
+    return res.json(projects);
 });
 
 app.listen(port, () => console.log(`App is listening on port ${port}`));
