@@ -1,13 +1,46 @@
 const express = require('express');
 const app = express();
 const port = 3000;
+const projects = [];
 
 app.use(express.json());
 
-const projects = [];
+/**
+ * Middleware to log the numbers of requests
+ */
+function logRequests(req, res, next) {
+    console.count('Number of requests');
+
+    return next();
+}
+
+app.use(logRequests);
+
+//Middleware to check if a project exists
+function checkProjectExists(req, res, next) {
+    const { id } = req.params;
+    if (!findProject(id)) {
+        return res.status(400).json({ error: 'Project not found' });
+    }
+    return next();
+}
+
+//Middleware to check if a project doesn't exists
+function checkProjectNotExists(req, res, next) {
+    const { id } = req.body;
+    if (findProject(id)) {
+        return res.status(400).json({ error: 'Project already exists' });
+    }
+    return next();
+}
+
+function findProject(id) {
+    const project = projects.find(p => p.id == id);
+    return project;
+}
 
 // Creates a new project
-app.post('/projects', (req, res) => {
+app.post('/projects', checkProjectNotExists, (req, res, next) => {
     const { id, title } = req.body;
 
     const project = {
@@ -26,7 +59,7 @@ app.get('/projects', (req, res) => {
 });
 
 //Update an existing project
-app.put('/projects/:id', (req, res) => {
+app.put('/projects/:id', checkProjectExists, (req, res, next) => {
     const { id } = req.params;
     const { title } = req.body;
     const project = projects.find(proj => proj.id == id);
@@ -35,7 +68,7 @@ app.put('/projects/:id', (req, res) => {
 });
 
 //Delete an existing project by id
-app.delete('/projects/:id', (req, res) => {
+app.delete('/projects/:id', checkProjectExists, (req, res, next) => {
     const { id } = req.params;
     const index = projects.findIndex(proj => proj.id == id);
     projects.splice(index, 1);
@@ -43,7 +76,7 @@ app.delete('/projects/:id', (req, res) => {
 });
 
 // Creates a new task for a project
-app.post('/projects/:id/tasks', (req, res) => {
+app.post('/projects/:id/tasks', checkProjectExists, (req, res, next) => {
     const { id } = req.params;
     const { title } = req.body;
 
