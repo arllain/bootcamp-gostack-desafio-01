@@ -4,5 +4,14 @@
     "description": "desafio-01 Bootcamp GoStack 10",
     "main": "src/index.js",
     "author": "arllain",
-    "license": "MIT"
+    "license": "MIT",
+    "scripts": {
+        "dev": "nodemon src/index.js"
+    },
+    "dependencies": {
+        "express": "^4.17.1"
+    },
+    "devDependencies": {
+        "nodemon": "^2.0.2"
+    }
 }
